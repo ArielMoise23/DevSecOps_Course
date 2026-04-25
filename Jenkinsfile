@@ -9,5 +9,11 @@ pipeline {
         archive 'target/*.jar'
       }
     }
+
+    stage('Unit tese') {
+      steps {
+        sh "mvn test"
+      }
+    }
 }
 }

@@ -34,11 +34,9 @@ pipeline {
 
   stage('K8S Deployment - Dev') {
       steps {
-        "Deployment" {
-          withKubeConfig([credentialsId: 'kubeconfig']) {
-            sh "sed -i 's#replace#arielmoi/devsecops-course:latest #g' k8s-deployment_service.yaml"
-            sh "kubectl apply -f k8s-deployment_service.yaml"
-          }
+        withKubeConfig([credentialsId: 'kubeconfig']) {
+          sh "sed -i 's#replace#arielmoi/devsecops-course:latest #g' k8s-deployment_service.yaml"
+          sh "kubectl apply -f k8s-deployment_service.yaml"
         }
       }
     }

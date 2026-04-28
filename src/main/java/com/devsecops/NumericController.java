@@ -1,5 +1,7 @@
 package com.devsecops;
 
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -36,14 +38,34 @@ public class NumericController {
 			return message;
 		}
 
+		// @GetMapping("/increment/{value}")
+		// public int increment(@PathVariable int value) {
+		// 	ResponseEntity<String> responseEntity = restTemplate.getForEntity(baseURL + '/' + value, String.class);
+		// 	String response = responseEntity.getBody();
+		// 	logger.info("Value Received in Request - " + value);
+		// 	logger.info("Node Service Response - " + response);
+		// 	return Integer.parseInt(response);
+		// }
+
 		@GetMapping("/increment/{value}")
 		public int increment(@PathVariable int value) {
-			ResponseEntity<String> responseEntity = restTemplate.getForEntity(baseURL + '/' + value, String.class);
-			String response = responseEntity.getBody();
-			logger.info("Value Received in Request - " + value);
-			logger.info("Node Service Response - " + response);
-			return Integer.parseInt(response);
-		}
+			// 1. Log the intent
+			logger.info("Incrementing value: {}", value);
+
+			// 2. Use a Map to catch JSON fields (e.g., {"result": 6})
+			try {
+				ResponseEntity<Map> responseEntity = restTemplate.getForEntity(baseURL + "/" + value, Map.class);
+				
+				if (responseEntity.getBody() != null) {
+					Object result = responseEntity.getBody().get("result"); // Change "result" to whatever your Node app sends
+					return Integer.parseInt(result.toString());
+				}
+			} catch (Exception e) {
+				logger.error("Failed to parse Node Service response", e);
+			}
+			
+			return -1; // Or throw a custom Exception
+}
 	}
 
 }

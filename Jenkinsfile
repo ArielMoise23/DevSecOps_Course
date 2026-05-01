@@ -34,8 +34,7 @@ pipeline {
     } 
     
     stage('SonarQube Analysis - SAST') {
-      def mvn = tool 'Default Maven';
-      withSonarQubeEnv() {
+      steps {
         sh "${mvn}/bin/mvn clean verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=numeric-application -Dsonar.projectName='numeric-application'"
       }
     }

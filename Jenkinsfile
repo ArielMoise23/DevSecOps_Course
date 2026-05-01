@@ -32,16 +32,13 @@ pipeline {
           pitmutation mutationStatsFile: '**/target/pit-reports/**/mutations.xml'}
       }
     } 
-    stage('SCM') {
-      steps {
-          checkout scm
-      }
+
+
+  stage('SonarQube analysis') {
+    withSonarQubeEnv('SonarQube') { // You can override the credential to be used, If you have configured more than one global server connection, you can specify the corresponding SonarQube installation name configured in Jenkins
+      sh 'mvn org.sonarsource.scanner.maven:sonar-maven-plugin:3.11.0.3922:sonar'
     }
-    stage('SonarQube Analysis - SAST') {
-      steps {
-        sh "mvn clean verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=numeric-application -Dsonar.projectName='numeric-application' -Dsonar.host.url='http://devsecops-demo.norwayeast.cloudapp.azure.com:9000'"
-      }
-    }
+  }
 
 
     stage('Docker Build and Push') {

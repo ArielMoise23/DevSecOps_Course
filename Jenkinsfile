@@ -34,10 +34,15 @@ pipeline {
     } 
     
     stage('SonarQube Analysis - SAST') {
-      withSonarQubeEnv('SonarQube') {
+      stage('SCM') {
         steps {
-          sh "mvn clean verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=numeric-application -Dsonar.projectName='numeric-application' -Dsonar.host.url='http://devsecops-demo.norwayeast.cloudapp.azure.com:9000'"
+            checkout scm
         }
+      }
+      withSonarQubeEnv() {
+      steps {
+        sh "mvn clean verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=numeric-application -Dsonar.projectName='numeric-application' -Dsonar.host.url='http://devsecops-demo.norwayeast.cloudapp.azure.com:9000'"
+      }
       }
     }
 

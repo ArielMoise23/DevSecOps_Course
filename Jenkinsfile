@@ -32,12 +32,14 @@ pipeline {
           pitmutation mutationStatsFile: '**/target/pit-reports/**/mutations.xml'}
       }
     } 
-
+    stage('SCM') {
+      steps {
+          checkout scm
+      }
+    }
     stage('SonarQube Analysis - SAST') {
-      withSonarQubeEnv() {
-        steps {
-          sh "mvn clean verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=numeric-application -Dsonar.projectName='numeric-application' -Dsonar.host.url='http://devsecops-demo.norwayeast.cloudapp.azure.com:9000'"
-        }
+      steps {
+        sh "mvn clean verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=numeric-application -Dsonar.projectName='numeric-application' -Dsonar.host.url='http://devsecops-demo.norwayeast.cloudapp.azure.com:9000'"
       }
     }
 

@@ -32,14 +32,12 @@ pipeline {
           pitmutation mutationStatsFile: '**/target/pit-reports/**/mutations.xml'}
       }
     } 
-
-    stage('SCM') {
-      checkout scm
-    }
     
-    stage('SonarQube Analysis') {
-      def mvn = tool 'Default Maven';
-      withSonarQubeEnv() {
+    stage('SonarQube Analysis - SAST') {
+      environment {
+        mvn = tool 'Maven 3.8.5'
+      }
+      steps {
         sh "${mvn}/bin/mvn clean verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=numeric-application -Dsonar.projectName='numeric-application'"
       }
     }
